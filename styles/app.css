@@ -1,0 +1,416 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::selection {
+  background-color: #47a3f3;
+  color: #fefefe;
+}
+
+html {
+  min-width: 360px;
+  scroll-behavior: smooth;
+  @apply bg-blue-50 dark:bg-gray-900 h-full;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+html.light {
+  @apply bg-blue-50;
+}
+
+html.dark {
+  @apply bg-gray-900;
+}
+
+/* https://seek-oss.github.io/capsize/ */
+.capsize::before {
+  content: '';
+  margin-bottom: -0.098em;
+  display: table;
+}
+
+.capsize::after {
+  content: '';
+  margin-top: -0.219em;
+  display: table;
+}
+
+p {
+  @apply leading-loose;
+}
+/*
+html {
+  --background-colour: white;
+
+  background-color: var(--background-colour);
+}
+
+html.dark {
+  --background-colour: black;
+}
+
+.dark-component {
+  color: white;
+}
+
+.light-component {
+  color: black;
+}
+*/
+.skip-nav {
+  @apply absolute px-4 py-3 transition-transform duration-200 transform -translate-y-12 -left-1/4 focus:top-4 focus:translate-y-3 -top-8;
+}
+
+#skip {
+  scroll-margin-top: 1.125rem;
+}
+/*
+text-gray-800 dark:text-gray-100
+*/
+pre {
+  @apply w-full max-w-full overflow-auto;
+}
+
+p { 
+  @apply my-2;
+}
+
+ul, li {
+  @apply my-2;
+}
+
+h1 {
+  @apply my-2 text-3xl font-bold tracking-tight text-black md:text-5xl dark:text-white;
+}
+
+h2 {
+  @apply my-2 text-2xl font-bold tracking-tight text-black md:text-2xl dark:text-white;
+}
+
+h3 {
+  @apply my-2 text-xl font-bold tracking-tight text-black md:text-xl dark:text-white;
+}
+
+h4 {
+@apply my-2 text-lg font-bold tracking-tight text-black md:text-lg dark:text-white;
+}
+
+h5 {
+@apply my-2 text-lg font-medium tracking-tight text-black md:text-lg dark:text-white;
+}
+
+h6 {
+@apply my-2 text-lg tracking-tight text-black md:text-lg dark:text-white;
+}
+
+@supports not (backdrop-filter: none) {
+  .sticky-nav {
+    backdrop-filter: none;
+    @apply bg-opacity-100;
+  }
+}
+
+.prose .anchor {
+  @apply absolute invisible no-underline;
+  margin-left: -1em;
+  padding-right: 0.5em;
+  width: 80%;
+  max-width: 700px;
+  cursor: pointer;
+}
+
+.prose blockquote {
+  @apply p-4 italic border-l-4 text-gray-600 border-gray-500 dark:border-gray-200;
+}
+
+.prose p {
+  @apply mb-2;
+}
+
+.anchor:hover {
+  @apply visible;
+}
+
+.prose a {
+  @apply transition-all text-blue-500;
+}
+
+.prose .anchor:after {
+  @apply text-gray-300 dark:text-gray-700;
+  content: '#';
+}
+
+.prose *:hover > .anchor {
+  @apply visible;
+}
+
+.prose img {
+  /* Don't apply styles to next/image */
+  @apply m-0;
+}
+
+.prose > :first-child {
+  /* Override removing top margin, causing layout shift */
+  margin-top: 1.25em !important;
+  margin-bottom: 1.25em !important;
+}
+
+.rehype-code-title {
+  @apply px-5 py-3 font-mono text-sm font-bold text-gray-800 bg-gray-200 border border-b-0 border-gray-200 rounded-t-lg dark:text-gray-200 dark:border-gray-700 dark:bg-gray-800;
+}
+
+.rehype-code-title + pre {
+  @apply mt-0 rounded-t-none;
+}
+
+.highlight-line {
+  @apply block px-4 -mx-4 bg-gray-100 border-l-4 border-blue-500 dark:bg-gray-800;
+}
+
+
+/*
+<callout-info>
+</callout-info>
+*/
+
+.prose callout-muted a,
+.prose callout-info a,
+.prose callout-warning a,
+.prose callout-danger a,
+.prose callout-success a {
+  text-decoration: underline;
+}
+
+.prose callout-muted p,
+.prose callout-info p,
+.prose callout-warning p,
+.prose callout-danger p,
+.prose callout-success p {
+  margin-bottom: 0;
+}
+
+.prose callout-muted,
+.prose callout-info,
+.prose callout-warning,
+.prose callout-danger,
+.prose callout-success {
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+.prose callout-muted,
+.prose callout-info,
+.prose callout-warning,
+.prose callout-danger,
+.prose callout-success {
+  display: block;
+  border-left: solid 4px;
+  padding: 0.5rem 1rem;
+  position: relative;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.prose callout-muted,
+.prose callout-info,
+.prose callout-warning,
+.prose callout-danger,
+.prose callout-success,
+.prose callout-muted *,
+.prose callout-info *,
+.prose callout-warning *,
+.prose callout-danger *,
+.prose callout-success * {
+  @apply text-lg;
+  /*font-size: 1.2rem;*/
+}
+
+.prose callout-muted.aside,
+.prose callout-info.aside,
+.prose callout-warning.aside,
+.prose callout-danger.aside,
+.prose callout-success.aside,
+.prose callout-muted.aside *,
+.prose callout-info.aside *,
+.prose callout-warning.aside *,
+.prose callout-danger.aside *,
+.prose callout-success.aside * {
+  @apply text-base;
+  /*font-size: 0.875rem;*/
+}
+
+.prose callout-muted.important,
+.prose callout-info.important,
+.prose callout-warning.important,
+.prose callout-danger.important,
+.prose callout-success.important,
+.prose callout-muted.important *,
+.prose callout-info.important *,
+.prose callout-warning.important *,
+.prose callout-danger.important *,
+.prose callout-success.important * {
+  @apply text-lg;
+
+/*  
+  font-size: 1.4rem;
+  font-weight: bold;
+*/  
+}
+
+.prose callout-muted:before,
+.prose callout-info:before,
+.prose callout-warning:before,
+.prose callout-danger:before,
+.prose callout-success:before {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+/* the warning yellow is really inaccessible in light mode, so we have a special case for light mode */
+.light .prose callout-warning,
+.light .prose callout-warning ol > li:before {
+  color: #676000;
+}
+.light .prose callout-warning:before {
+  background: #ffd800;
+}
+.prose callout-warning,
+.prose callout-warning ol > li:before {
+  color: #ffd644;
+}
+.prose callout-warning:before {
+  background: #ffd644;
+}
+
+/* the muted gray is really inaccessible in light mode, so we have a special case for light mode */
+.light .prose callout-muted,
+.light .prose callout-muted ol > li:before {
+  color: #4c4b5e;
+}
+.light .prose callout-muted:before {
+  background: #3c3e4d;
+}
+
+.prose callout-muted,
+.prose callout-muted ol > li:before {
+  color: #b9b9c3;
+}
+.prose callout-muted:before {
+  background: #3c3e4d;
+}
+
+.prose callout-info,
+.prose callout-info ol > li:before {
+  color: #4b96ff;
+}
+.prose callout-info:before {
+  background: #4b96ff;
+}
+
+.prose callout-danger,
+.prose callout-danger ol > li:before {
+  color: #ff4545;
+}
+.prose callout-danger:before {
+  background: #ff4545;
+}
+
+.prose callout-success,
+.prose callout-success ol > li:before {
+  color: #30c85e;
+}
+.prose callout-success:before {
+  background: #30c85e;
+}
+
+/* Remove Safari input shadow on mobile */
+input[type='text'],
+input[type='email'] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.metric-card > a {
+  @apply no-underline;
+}
+
+.metric-card > p {
+  @apply my-2;
+}
+
+.step > h3 {
+  @apply my-0;
+}
+
+.prose .tweet a {
+  text-decoration: inherit;
+  font-weight: inherit;
+}
+
+.prose table {
+  display: block;
+  max-width: fit-content;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.prose .callout > p {
+  margin: 0 !important;
+}
+
+pre[class*='language-'] {
+  color: theme('colors.slate.50');
+}
+
+.token.tag,
+.token.class-name,
+.token.selector,
+.token.selector .class,
+.token.selector.class,
+.token.function {
+  color: theme('colors.pink.400');
+}
+
+.token.attr-name,
+.token.keyword,
+.token.rule,
+.token.pseudo-class,
+.token.important {
+  color: theme('colors.slate.300');
+}
+
+.token.module {
+  color: theme('colors.pink.400');
+}
+
+.token.attr-value,
+.token.class,
+.token.string,
+.token.property {
+  color: theme('colors.sky.300');
+}
+
+.token.punctuation,
+.token.attr-equals {
+  color: theme('colors.slate.500');
+}
+
+.token.unit,
+.language-css .token.function {
+  color: theme('colors.teal.200');
+}
+
+.token.comment,
+.token.operator,
+.token.combinator {
+  color: theme('colors.slate.400');
+}
