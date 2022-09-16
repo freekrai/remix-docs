@@ -88,6 +88,7 @@ export default function Container({children}) {
                     <Link 
                         to="/" 
                         prefetch="intent"
+                        className='dark:text-slate-400 dark:before:bg-slate-700 dark:hover:text-slate-300'
                     >
                         {config.title}
                     </Link>
