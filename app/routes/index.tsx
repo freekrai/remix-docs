@@ -4,9 +4,6 @@ export default function Index() {
   return (
     <div className="flex flex-col items-start justify-center w-full max-w-2xl mx-auto mb-16">
       <h1>Welcome to Remix Docs</h1>
-      <callout-info>
-        Choose an option...
-      </callout-info>
       <ul>
         <li>
           <Link

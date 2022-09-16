@@ -7,6 +7,7 @@ import { renderers } from "@markdoc/markdoc";
 import * as React from "react";
 import Highlight, { defaultProps } from 'prism-react-renderer'
 import type { ReactNode } from "react";
+import { Link } from "@remix-run/react";
 
 import {
 	LightBulbIcon,
@@ -52,6 +53,59 @@ type CalloutProps = {
 	type: Types 
 };
 
+type QuickLinksProps = { 
+	children: ReactNode; 
+};
+
+export function QuickLinks({ children }: QuickLinksProps) {
+	return (
+	  <div className="not-prose my-12 grid grid-cols-1 gap-6 sm:grid-cols-2">
+		{children}
+	  </div>
+	)
+}
+  
+QuickLinks.scheme = {
+	render: QuickLinks.name,
+	description: "Display the enclosed content in a box",
+};  
+
+type QuickLinkProps = { 
+	title: string;
+	description: string;
+	href: string;
+};
+
+export function QuickLink({ title, description, href }: QuickLinkProps) {
+	return (
+		<div className="group relative rounded-xl border border-slate-200 dark:border-slate-800">
+			<div className="absolute -inset-px rounded-xl border-2 border-transparent opacity-0 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sky.50)),var(--quick-links-hover-bg,theme(colors.sky.50)))_padding-box,linear-gradient(to_top,theme(colors.indigo.400),theme(colors.cyan.400),theme(colors.sky.500))_border-box] group-hover:opacity-100 dark:[--quick-links-hover-bg:theme(colors.slate.800)]" />
+			<div className="relative overflow-hidden rounded-xl p-6">
+				<h2 className="mt-4 font-display text-base text-slate-900 dark:text-white">
+					<Link to={href}>
+						<span className="absolute -inset-px rounded-xl" />
+						{title}
+					</Link>
+				</h2>
+				<p className="mt-1 text-sm text-slate-700 dark:text-slate-400">
+					{description}
+				</p>
+			</div>
+		</div>
+	)
+}
+
+QuickLink.scheme = {
+	render: QuickLink.name,
+	description: "Display the enclosed content in a quick link box",
+	children: ["paragraph", "tag", "list"],
+	selfClosing: true,
+	attributes: {
+		title: { type: String },
+		description: { type: String },
+		href: { type: String },
+	},
+};
 
 export function Callout({ children, title, type }: CalloutProps) {
   let IconComponent = icons[type]
@@ -144,6 +198,8 @@ export function MarkdownView({ content, components = {} }: Props) {
 				components: { 
 					Callout,
 					Fence, 
+					QuickLinks,
+					QuickLink
 				} 
 			})}</>
 	)
