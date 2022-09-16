@@ -42,9 +42,8 @@ const icons = {
 	note: (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => <LightBulbIcon {...props} />,
 	warning: (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => <ExclamationTriangleIcon {...props} />,
 	success: (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => <CheckIcon {...props} />,
-  }
+}
   
-
 type Types = "check" | "error" | "note" | "warning";
 
 type CalloutProps = { 
@@ -56,6 +55,29 @@ type CalloutProps = {
 type QuickLinksProps = { 
 	children: ReactNode; 
 };
+
+type QuickLinkProps = { 
+	title: string;
+	description: string;
+	href: string;
+};
+
+/*** 
+ * check if the link is external or internal, if internal, use Remix Link, if external use a href...
+ ***/
+const CustomLink = (props) => {
+	const href = props.href;
+	const isInternalLink = href && (href.startsWith('/') || href.startsWith('#'));
+  
+	if (isInternalLink) {
+	  return (
+		<Link to={href} prefetch="intent" {...props}>{props.children}</Link>
+	  );
+	}
+  
+	return <a target="_blank" rel="noopener noreferrer" {...props} />;
+};
+  
 
 export function QuickLinks({ children }: QuickLinksProps) {
 	return (
@@ -70,15 +92,6 @@ QuickLinks.scheme = {
 	description: "Display the enclosed content in a box",
 };  
 
-type QuickLinkProps = { 
-	title: string;
-	description: string;
-	href: string;
-};
-
-var isExternalURL = function(url) {
-    return url.match( /[a-zA-Z0-9]*:\/\/[^\s]*/g ) != null;
-}
 
 export function QuickLink({ title, description, href }: QuickLinkProps) {
 	return (
@@ -86,13 +99,10 @@ export function QuickLink({ title, description, href }: QuickLinkProps) {
 			<div className="absolute -inset-px rounded-xl border-2 border-transparent opacity-0 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sky.50)),var(--quick-links-hover-bg,theme(colors.sky.50)))_padding-box,linear-gradient(to_top,theme(colors.indigo.400),theme(colors.cyan.400),theme(colors.sky.500))_border-box] group-hover:opacity-100 dark:[--quick-links-hover-bg:theme(colors.slate.800)]" />
 			<div className="relative overflow-hidden rounded-xl p-6">
 				<h2 className="mt-4 font-display text-base text-slate-900 dark:text-white">
-					{!isExternalURL(href) ? <Link to={href} prefetch="intent">
+					<CustomLink href={href}>
 						<span className="absolute -inset-px rounded-xl" />
 						{title}
-					</Link> : <a href={href}>
-					<span className="absolute -inset-px rounded-xl" />
-					{title}
-					</a>}
+					</CustomLink>
 				</h2>
 				<p className="mt-1 text-sm text-slate-700 dark:text-slate-400">
 					{description}
