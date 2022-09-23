@@ -30,6 +30,7 @@ export default {
         enabled: true,
     },
     editLink: {
+        enabled: true,
         link: 'https://github.com/freekrai/remix-docs',
         text: 'Edit this page on GitHub',
     },

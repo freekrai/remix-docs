@@ -71,6 +71,7 @@ export default function Container({children}) {
                     >Home</NavLink>
                     {config.nav && config.nav.map( nav => (
                         <NavLink 
+                            key={nav.link} 
                             to={nav.link} 
                             prefetch="intent" 
                             aria-label={nav.link}
@@ -104,9 +105,11 @@ export default function Container({children}) {
                         </button>
                         {isSearching && <SearchPalette open={isSearching} setOpen={setIsSearching} />}
                     </>}
-                    {config.editLink.link && <a href={config.editLink.link} className="group" aria-label="GitHub">
-                        <GitHubIcon className="h-8 w-8 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300" />
-                    </a>}
+                    {config.editLink.enabled && <>
+                        {config.editLink.link && <a href={config.editLink.link} className="group" aria-label="GitHub">
+                            <GitHubIcon className="h-8 w-8 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300" />
+                        </a>}
+                    </>}
                     <button
                         onClick={toggleTheme}
                         aria-label="Toggle Dark Mode"
