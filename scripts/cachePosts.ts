@@ -24,27 +24,32 @@ async function walk(path: string, callback: (path: string, stat: any) => Promise
 	}));
 };
 
-async function getPosts() {
-	let walkPath = './content/posts';
-
+/*** 
+ * build a cache file for each content-type
+ * walkPath: the path to read
+ * filename: what to save the cache file as
+ * urlPath: used for slugs, such as /docs, /posts, etc
+***/
+async function cacheFile(walkPath, filename, urlPath) {
 	let blogPosts: Array<BlogPost> = [];
 
 	let addFile = async (file: string) => {
+		let frontmatter = fm<BlogPostAttributes>(await fs.readFile(file, 'utf-8'));
+	    let url = '';
+
+		// is this an index.mdx file?
 		if (file.endsWith('index.mdx')) {
-			let frontmatter = fm<BlogPostAttributes>(await fs.readFile(file, 'utf-8'));
-			blogPosts.push({
-				attributes: frontmatter.attributes,
-				body: frontmatter.attributes.excerpt.substring(0, 100) + '...',
-				url: `/blog/${file.substring(walkPath.length + 1, file.length - '/index.mdx'.length)}`
-			});
+			url = `${urlPath}/${file.substring(walkPath.length + 1, file.length - '/index.mdx'.length)}`;
+		// is this any other mdx file?
 		} else if (file.endsWith('.mdx')) {
-			let frontmatter = fm<BlogPostAttributes>(await fs.readFile(file, 'utf-8'));
-			blogPosts.push({
-				attributes: frontmatter.attributes,
-				body: frontmatter.attributes.excerpt.substring(0, 100) + '...',
-				url: `/blog/${file.substring(walkPath.length + 1, file.length - '.mdx'.length)}`
-			});
+            url = `${urlPath}/${file.substring(walkPath.length + 1, file.length - '.mdx'.length)}`;
 		}
+
+		blogPosts.push({
+			attributes: frontmatter.attributes,
+			body: frontmatter.attributes.excerpt.substring(0, 100) + '...',
+			url: url.replace(/\/\//g,"/")
+		});
 	}
 
 	await walk(walkPath, addFile);
@@ -56,89 +61,25 @@ async function getPosts() {
 		return aTime > zTime ? -1 : aTime === zTime ? 0 : 1
 	});
 
-	await fs.writeFile('./content/blog-cache.json', JSON.stringify(blogPosts));
+	await fs.writeFile(filename, JSON.stringify(blogPosts));
 }
 
-async function getDocs() {
-	let walkPath = './content/docs';
-
-	let blogPosts: Array<BlogPost> = [];
-
-	let addFile = async (file: string) => {
-		if (file.endsWith('index.mdx')) {
-			let frontmatter = fm<BlogPostAttributes>(await fs.readFile(file, 'utf-8'));
-			blogPosts.push({
-				attributes: frontmatter.attributes,
-				body: frontmatter.attributes.excerpt.substring(0, 100) + '...',
-				url: `/docs/${file.substring(walkPath.length + 1, file.length - '/index.mdx'.length)}`
-			});
-		} else if (file.endsWith('.mdx')) {
-			let frontmatter = fm<BlogPostAttributes>(await fs.readFile(file, 'utf-8'));
-			blogPosts.push({
-				attributes: frontmatter.attributes,
-				body: frontmatter.attributes.excerpt.substring(0, 100) + '...',
-				url: `/docs/${file.substring(walkPath.length + 1, file.length - '.mdx'.length)}`
-			});
-		}
-	}
-
-	await walk(walkPath, addFile);
-	
-	// sort by the date in frontmatter
-	blogPosts = blogPosts.sort((a, z) => {
-		const aTime = new Date(a.attributes.date ?? '').getTime()
-		const zTime = new Date(z.attributes.date ?? '').getTime()
-		return aTime > zTime ? -1 : aTime === zTime ? 0 : 1
-	});
-
-	await fs.writeFile('./content/docs-cache.json', JSON.stringify(blogPosts));
+// for each content-type, we can generate a cache json file
+async function getContent() {
+	// posts
+	await cacheFile('./content/posts', './content/blog-cache.json','/blog');
+	// docs
+	await cacheFile('./content/docs', './content/docs-cache.json', '/docs');
+	// pages
+	await cacheFile('./content/pages', './content/page-cache.json','');
 }
 
-
-async function getPages() {
-	let walkPath = './content/pages';
-
-	let blogPosts: Array<BlogPost> = [];
-
-	let addFile = async (file: string) => {
-		if (file.endsWith('index.mdx')) {
-			let frontmatter = fm<BlogPostAttributes>(await fs.readFile(file, 'utf-8'));
-			blogPosts.push({
-				attributes: frontmatter.attributes,
-				body: frontmatter.attributes.excerpt.substring(0, 100) + '...',
-				url: `/${file.substring(walkPath.length + 1, file.length - '/index.mdx'.length)}`
-			});
-		} else if (file.endsWith('.mdx')) {
-			let frontmatter = fm<BlogPostAttributes>(await fs.readFile(file, 'utf-8'));
-			blogPosts.push({
-				attributes: frontmatter.attributes,
-				body: frontmatter.attributes.excerpt.substring(0, 100) + '...',
-				url: `/${file.substring(walkPath.length + 1, file.length - '.mdx'.length)}`
-			});
-		}
-	}
-
-	await walk(walkPath, addFile);
-	
-	// sort by the date in frontmatter
-	blogPosts = blogPosts.sort((a, z) => {
-		const aTime = new Date(a.attributes.date ?? '').getTime()
-		const zTime = new Date(z.attributes.date ?? '').getTime()
-		return aTime > zTime ? -1 : aTime === zTime ? 0 : 1
-	});
-
-	await fs.writeFile('./content/page-cache.json', JSON.stringify(blogPosts));
-}
-
-
-getPosts();
-getDocs();
-getPages();
+getContent();
 
 if (process.argv.at(-1) === 'watch') {
 	watch('./content', (eventType, filename) => {
 		if (filename.endsWith('.mdx')) {
-			getPosts();
+			getContent();
 		}
 	});
 }
