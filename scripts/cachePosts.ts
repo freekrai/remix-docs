@@ -1,5 +1,5 @@
 import fm from "front-matter";
-import { BlogPostAttributes } from "../app/types";
+import type { BlogPostAttributes } from "../app/types";
 import fs from 'fs/promises'
 import { watch } from 'fs';
 
