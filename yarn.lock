@@ -6952,11 +6952,6 @@
     "type-fest" "^2.5.2"
     "uuid" "^8.3.2"
 
-"remix@^1.8.2":
-  "integrity" "sha512-f0mWcwhTV1Upe38CumbxPCt+dErvRA0YFfDMcsW7G4tlEidcE54tSTzRivMNfPtBqZ8V+dxU5KYTySX1tO1DHA=="
-  "resolved" "https://registry.npmjs.org/remix/-/remix-1.8.2.tgz"
-  "version" "1.8.2"
-
 "repeat-element@^1.1.2":
   "integrity" "sha512-LFiNfRcSu7KK3evMyYOuCzv3L10TW7yC1G2/+StMjK8Y6Vqd2MG7r/Qjw4ghtuCOjFvlnms/iMmLqpvW/ES/WQ=="
   "resolved" "https://registry.npmjs.org/repeat-element/-/repeat-element-1.1.4.tgz"
