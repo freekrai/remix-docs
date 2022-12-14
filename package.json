@@ -11,7 +11,7 @@
     "dev:css": "tailwindcss -w -i ./styles/app.css -o app/styles/app.css",
     "dev:posts": "npx ts-node scripts/cachePosts.ts watch",
     "dev:remix": "remix dev",
-    "postinstall": "npm run build:posts && remix setup node"
+    "postinstall": "npm run build:posts"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.5",
@@ -36,7 +36,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "reading-time": "^1.5.0",
-    "remix": "^1.8.2",
     "remix-seo": "^0.1.0",
     "remix-utils": "^5.1.0",
     "spin-delay": "^1.2.0",
