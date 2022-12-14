@@ -2,7 +2,7 @@ import { Fragment, useState, useEffect } from 'react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { Combobox, Dialog, Transition } from '@headlessui/react'
 
-import { useFetcher } from "remix";
+import { useFetcher } from "@remix-run/react";
 
 import { loader } from "~/routes/actions/search";
 

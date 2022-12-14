@@ -100,7 +100,7 @@ function removeTrailingSlash(s: string) {
 }
 
 function getDisplayUrl(requestInfo?: {origin: string; path: string}) {
-  return getUrl(requestInfo).replace(/^https?:\/\//, '')
+  return getUrl(requestInfo).replace(/^https?:\/\//, '');
 }
 
 function getUrl(requestInfo?: {origin: string; path: string}) {

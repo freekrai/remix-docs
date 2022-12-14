@@ -1,4 +1,5 @@
-import { LoaderArgs, json } from "remix";
+import type { LoaderArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { getPosts, getDocs } from '~/utils/blog.server';
 import {getDomainUrl} from '~/utils'
 
