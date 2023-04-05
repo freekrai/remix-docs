@@ -1,4 +1,4 @@
-import type {LoaderFunction} from '@remix-run/node'
+import type {LoaderFunction} from '@vercel/remix'
 import * as dateFns from 'date-fns'
 import {getDomainUrl} from '~/utils'
 import { getPosts } from '~/utils/blog.server';

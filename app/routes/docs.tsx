@@ -1,4 +1,4 @@
-import { ErrorBoundaryComponent, json, LoaderArgs, SerializeFrom} from '@remix-run/node';
+import { ErrorBoundaryComponent, json, LoaderArgs, SerializeFrom} from '@vercel/remix';
 import { Link,  useLoaderData } from "@remix-run/react";
 import { BlogPost as BlogPostType } from '~/types';
 import { getContent } from '~/utils/blog.server';

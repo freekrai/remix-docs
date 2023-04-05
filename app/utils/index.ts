@@ -1,5 +1,5 @@
 import * as React from 'react'
-import type {HeadersFunction} from '@remix-run/node'
+import type {HeadersFunction} from '@vercel/remix'
 import * as dateFns from 'date-fns'
 import type {NonNullProperties} from '~/types'
 import { camelize, underscore } from "inflected";

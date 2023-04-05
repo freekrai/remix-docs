@@ -3,8 +3,8 @@ import type {
 	MetaFunction,
 	HeadersFunction,
 	SerializeFrom,
-} from "@remix-run/node";
-import { json } from '@remix-run/node';
+} from "@vercel/remix";
+import { json } from '@vercel/remix';
 import { useLoaderData } from '@remix-run/react'
 
 import invariant from "tiny-invariant";

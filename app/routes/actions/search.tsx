@@ -1,5 +1,5 @@
-import type { LoaderArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import type { LoaderArgs } from "@vercel/remix";
+import { json } from "@vercel/remix";
 import { getPosts, getDocs } from '~/utils/blog.server';
 import {getDomainUrl} from '~/utils'
 

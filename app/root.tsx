@@ -1,5 +1,5 @@
-import type { HeadersFunction, LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import type { HeadersFunction, LinksFunction, LoaderFunction, MetaFunction } from "@vercel/remix";
+import { json } from "@vercel/remix";
 import {
   Links,
   useLoaderData,
@@ -28,7 +28,7 @@ import config from '~/docs.config';
 import { getSeo } from "~/seo";
 let [seoMeta, seoLinks] = getSeo();
 
-import tailwindStyles from "./styles/app.css"
+import tailwindStyles from "./tailwind.css"
 
 //import type {SideBarItem, SidebarGroup} from '~/utils/docs.server';
 import Container from "~/components/layout/Container";
