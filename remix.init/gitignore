@@ -9,3 +9,5 @@ node_modules
 .output
 /api
 /app/styles/*.css
+
+.DS_STORE
