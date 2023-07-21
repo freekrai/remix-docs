@@ -5,7 +5,6 @@ This file handles all our Markdoc rendering on the frontend.
 import type { RenderableTreeNodes } from "@markdoc/markdoc";
 import { renderers } from "@markdoc/markdoc";
 import * as React from "react";
-import Highlight, { defaultProps } from 'prism-react-renderer'
 import type { ReactNode } from "react";
 import { Link } from "@remix-run/react";
 
@@ -155,52 +154,6 @@ Callout.scheme = {
 };
 
 
-type FenceProps = { 
-	children: ReactNode; 
-	language?: string;
-};
-
-export function Fence({ children, language }: FenceProps) {
-	return (
-	  <Highlight
-		{...defaultProps}
-		code={children.trimEnd()}
-		language={language}
-		theme={undefined}
-	  >
-		{({ className, style, tokens, getTokenProps }) => (
-		  <pre className={className} style={style}>
-			<code>
-			  {tokens.map((line, lineIndex) => (
-				<React.Fragment key={lineIndex}>
-				  {line
-					.filter((token) => !token.empty)
-					.map((token, tokenIndex) => (
-					  <span key={tokenIndex} {...getTokenProps({ token })} />
-					))}
-				  {'\n'}
-				</React.Fragment>
-			  ))}
-			</code>
-		  </pre>
-		)}
-	  </Highlight>
-	)
-  }
-
-Fence.scheme = {
-	render: Fence.name,
-	description: "Highlight block of code",
-	children: ["pre", "code"],
-	attributes: {
-		language: {
-			type: String,
-			description: 'The programming language of the code block. Place it after the backticks.'
-		}
-	},
-  };
-  
-
 type Props = {
 	content: RenderableTreeNodes;
 	components?: Record<string, React.ComponentType>;
@@ -214,7 +167,6 @@ export function MarkdownView({ content, components = {} }: Props) {
 			React, { 
 				components: { 
 					Callout,
-					Fence, 
 					QuickLinks,
 					QuickLink
 				} 

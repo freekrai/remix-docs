@@ -1,19 +1,24 @@
-import { ErrorBoundaryComponent, json, LoaderArgs, } from '@vercel/remix';
+import { V2_MetaFunction, json, LoaderArgs, } from '@vercel/remix';
 import { Link,  useLoaderData } from "@remix-run/react";
 import { BlogPost as BlogPostType } from '~/types';
 import { getPosts } from '~/utils/blog.server';
 import BlogPost from '~/components/BlogPost';
 import { CacheControl } from "~/utils/cache-control.server";
-import { getSeoMeta } from "~/seo";
+import { getSeo } from "~/seo";
 
-export let meta = ({ context }) => {
-	let seoMeta = getSeoMeta({
-		title: `Blog`
-	});
-	return {
-		...seoMeta,
-	};
-};
+export const meta: V2_MetaFunction = ({ data, matches }) => {
+	if(!data) return [];
+
+	const parentData = matches.flatMap((match) => match.data ?? [] );
+
+	return [
+		getSeo({
+			title: 'Blog',
+			description: 'Blog',
+			url: `${parentData[0].requestInfo.url}`,
+		}),  
+	]
+}
 
 export let loader = async function({}: LoaderArgs) {
   return json({
@@ -45,12 +50,4 @@ export default function Index() {
         ))}
     </div>
   );
-}
-
-export const ErrorBoundary: ErrorBoundaryComponent = ({error}) => {
-  return (
-    <main>
-      <h1>Unable to fetch list of blog posts. Please check back later</h1>
-    </main>
-  )
 }

@@ -1,6 +1,6 @@
 import type {
 	LoaderArgs,
-	MetaFunction,
+	V2_MetaFunction,
 	HeadersFunction,
 	SerializeFrom,
 } from "@vercel/remix";
@@ -10,10 +10,24 @@ import { useLoaderData } from '@remix-run/react'
 import invariant from "tiny-invariant";
 import { getContent } from "~/utils/blog.server";
 import { CacheControl } from "~/utils/cache-control.server";
-import { getSeoMeta } from "~/seo";
 
 import { MarkdownView } from "~/components/Markdown";
 import { parseMarkdown } from "~/utils/markdoc.server";
+
+import { getSeo } from "~/seo";
+export const meta: V2_MetaFunction = ({ data, matches }) => {
+	if(!data) return [];
+
+	const parentData = matches.flatMap((match) => match.data ?? [] );
+
+	return [
+		getSeo({
+			title: data.post.frontmatter.meta.title,
+			description: data.post.frontmatter.meta.description,
+			url: `${parentData[0].requestInfo.url}`,
+		}),  
+	]
+}
 
 export const loader = async ({params}: LoaderArgs) => {
 	const files = await getContent(`pages/about`);
@@ -32,19 +46,6 @@ export const headers: HeadersFunction = ({loaderHeaders}) => {
 	return {
 		'Cache-Control': loaderHeaders.get('Cache-Control')!
 	}
-}
-
-export const meta: MetaFunction = ({data}) => {
-	if (!data) return {};
-	let { post } = data as SerializeFrom<typeof loader>;
-
-	let seoMeta = getSeoMeta({
-		title: post.frontmatter.meta.title,
-		description: post.frontmatter.meta.description,
-	});
-	return {
-		...seoMeta,
-	};
 }
 
 export default function BlogPost() {

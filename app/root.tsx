@@ -1,4 +1,4 @@
-import type { HeadersFunction, LinksFunction, LoaderFunction, MetaFunction } from "@vercel/remix";
+import type { HeadersFunction, LinksFunction, LoaderFunction, V2_MetaFunction } from "@vercel/remix";
 import { json } from "@vercel/remix";
 import {
   Links,
@@ -8,7 +8,8 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useCatch
+  isRouteErrorResponse,
+  useRouteError,
 } from "@remix-run/react";
 
 import {
@@ -23,15 +24,27 @@ import { getThemeSession } from "~/utils/theme.server";
 import { CacheControl } from "~/utils/cache-control.server";
 import ErrorPage from '~/components/ErrorPage'
 
-import config from '~/docs.config';
-
-import { getSeo } from "~/seo";
-let [seoMeta, seoLinks] = getSeo();
-
 import tailwindStyles from "./tailwind.css"
 
 //import type {SideBarItem, SidebarGroup} from '~/utils/docs.server';
 import Container from "~/components/layout/Container";
+
+import {getDomainUrl, removeTrailingSlash} from '~/utils'
+
+import config from '~/docs.config';
+import { getSeo}  from '~/seo'
+
+export const meta: V2_MetaFunction = ({ data, matches }) => {
+  if(!data) return [];
+
+  return [
+    getSeo({
+      title: config.title,
+      description: config.description,
+      url: data.canonical ? data.canonical : '',
+    }),  
+  ]
+}
 
 export const handle = {
   id: 'root',
@@ -39,16 +52,15 @@ export const handle = {
 
 export type LoaderData = {
   theme: Theme | null;
+  canonical?: string;
+  requestInfo: {
+    url: string;
+    origin: string
+    path: string
+  } | null;
 };
 
-export const meta: MetaFunction = () => ({
-  ...seoMeta,
-  charset: "utf-8",
-  viewport: "width=device-width,initial-scale=1",
-});
-
 export const links: LinksFunction = () => [
-  ...seoLinks,
   { rel: "preconnect", href: "//fonts.gstatic.com", crossOrigin: "anonymous" },
   {rel: "stylesheet", href: tailwindStyles},
   { rel: "stylesheet", href: "//fonts.googleapis.com/css?family=Work+Sans:300,400,600,700&amp;lang=en" },
@@ -60,9 +72,19 @@ export const headers: HeadersFunction = () => {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const themeSession = await getThemeSession(request);
-    return json({
-      theme: themeSession.getTheme(),
-    });
+
+  const url = getDomainUrl(request);
+  const path = new URL(request.url).pathname;
+
+  return json({
+    theme: themeSession.getTheme(),
+    canonical: removeTrailingSlash(`${url}${path}`),
+    requestInfo: {
+      url: removeTrailingSlash(`${url}${path}`),
+      origin: getDomainUrl(request),
+      path: new URL(request.url).pathname,
+    },
+  });
 };
 
 function App() {
@@ -71,12 +93,20 @@ function App() {
   return (
     <html lang="en" className={theme ?? ""}>
       <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
+        {data.requestInfo && <link
+          rel="canonical"
+          href={removeTrailingSlash(
+            `${data.requestInfo.origin}${data.requestInfo.path}`,
+          )}
+        />}
         <Links />
         <ThemeHead ssrTheme={Boolean(data.theme)} />
       </head>
       <body>
-      <Container>
+        <Container>
           <Outlet />
         </Container>
         <ThemeBody ssrTheme={Boolean(data.theme)} />
@@ -98,43 +128,31 @@ export default function AppWithProviders() {
   );
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
-  return (
-    <ErrorDocument title="Error!">
-      <ErrorPage 
-        code={500}
-        title={`There was an error`} 
-        message={error.message} 
-      />
-    </ErrorDocument>
-  );
-}
+export function ErrorBoundary() {
+  let error = useRouteError();
+  let status = '500';
+  let message = '';
+  let stacktrace;
 
-export function CatchBoundary() {
-  let caught = useCatch();
-
-  let message;
-  switch (caught.status) {
-    case 401:
-      message = (
-        <p>
-          Oops! Looks like you tried to visit a page that you do not have access
-          to.
-        </p>
-      );
-      break;
-    case 404:
-      message = (
-        <p>Oops! Looks like you tried to visit a page that does not exist.</p>
-      );
-      break;
-
-    default:
-      throw new Error(caught.data || caught.statusText);
+  // when true, this is what used to go to `CatchBoundary`
+  if ( error.status === 404 ) {
+    status = 404;
+    message = 'Page Not Found';
+  } else if (error instanceof Error) {
+    status = '500';
+    message = error.message;
+    stacktrace = error.stack;
+  } else {
+    status = '500';
+    message = 'Unknown Error';
   }
   return (
-    <ErrorDocument title={`${caught.status} ${caught.statusText}`}>
-      <ErrorPage code={caught.status} title={`${caught.status}: ${caught.statusText}`} message={message} />
+    <ErrorDocument title="Error!">
+      <ErrorPage
+        code={status}
+        title={`There was an error`}
+        message={message}
+      />
     </ErrorDocument>
   );
 }

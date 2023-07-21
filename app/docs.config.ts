@@ -3,6 +3,7 @@ export default {
 	lang: 'en-US',
     title: 'Remix Docs',
     description: 'Just playing around.',
+    publicURL: 'http://localhost:300',
     nav: [
         { text: 'Docs', link: '/docs' },
         { text: 'Blog', link: '/blog' },

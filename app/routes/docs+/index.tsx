@@ -1,26 +1,28 @@
-import { ErrorBoundaryComponent, json, LoaderArgs, SerializeFrom} from '@vercel/remix';
+import { V2_MetaFunction, json, LoaderArgs, SerializeFrom} from '@vercel/remix';
 import { Link,  useLoaderData } from "@remix-run/react";
 import { BlogPost as BlogPostType } from '~/types';
 import { getContent } from '~/utils/blog.server';
 import BlogPost from '~/components/BlogPost';
 import { CacheControl } from "~/utils/cache-control.server";
-import { getSeoMeta } from "~/seo";
+import { getSeo } from "~/seo";
 
 import { MarkdownView } from "~/components/Markdown";
 import { parseMarkdown } from "~/utils/markdoc.server";
 
-export const meta = ({data}) => {
-	if (!data) return {};
-	let { post } = data as SerializeFrom<typeof loader>;
+export const meta: V2_MetaFunction = ({ data, matches }) => {
+	if(!data) return [];
 
-	let seoMeta = getSeoMeta({
-		title: post.frontmatter.meta.title,
-		description: post.frontmatter.meta.description,
-	});
-	return {
-		...seoMeta,
-	};
+	const parentData = matches.flatMap((match) => match.data ?? [] );
+
+	return [
+		getSeo({
+			title: 'Docs',
+			description: 'Docs',
+			url: `${parentData[0].requestInfo.url}`,
+		}),  
+	]
 }
+
 export let loader = async function({}: LoaderArgs) {
   const files = await getContent(`docs/index`);
   let post = files && parseMarkdown(files[0].content);
@@ -34,7 +36,6 @@ export let loader = async function({}: LoaderArgs) {
   });
 }
 
-
 export default function Index() {
 	const {post} = useLoaderData<typeof loader>();
 
@@ -46,12 +47,4 @@ export default function Index() {
 			</div>
 		</article>
 	)
-}
-
-export const ErrorBoundary: ErrorBoundaryComponent = ({error}) => {
-  return (
-    <main>
-      <h1>Unable to fetch list of blog posts. Please check back later</h1>
-    </main>
-  )
 }

@@ -21,7 +21,6 @@ export const getPosts = async (): Promise<BlogPost[]> => {
 	return getCacheFile('blog-cache.json')
 }
 
-
 export const getDocs = async (): Promise<BlogPost[]> => {
 	return getCacheFile('docs-cache.json')
 }
